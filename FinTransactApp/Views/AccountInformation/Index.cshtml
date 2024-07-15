@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewData["Title"] = "Account Information";
+}
+
+<h1>Account List</h1>
+
+<p style="text-align:right;margin-right:20px;">
+    <a class="btn btn-outline-primary" asp-action="Create">Create New</a>
+</p>
+<div class="table-responsive">
+    <table id="accountTable" class="table">
+        <thead>
+            <tr>
+                <th>Account Name</th>
+                <th>Account Number</th>
+                <th>Contact Number</th>
+                <th colspan="3">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="accountInformation">
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    async function fetchAccountInformation() {
+        const userToken = {
+            Token: localStorage.getItem('token'),
+            UserId: localStorage.getItem('userId')
+        };
+
+        try {
+            const response = await fetch('/AccountInformation/GetAccountInformation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userToken)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                populateTable(data);
+            } else {
+                console.error('Failed to fetch account information');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function populateTable(data) {
+        const tableBody = document.getElementById('accountInformation');
+        tableBody.innerHTML = ''; 
+
+        data.forEach(item => {
+            const row = document.createElement('tr');
+
+            const idCell = document.createElement('td');
+            idCell.textContent = item.accountName;
+            row.appendChild(idCell);
+
+            const nameCell = document.createElement('td');
+            nameCell.textContent = item.accountNumber;
+            row.appendChild(nameCell);
+
+            const balanceCell = document.createElement('td');
+            balanceCell.textContent = item.contactNumber;
+            row.appendChild(balanceCell);
+
+            const detailButton = document.createElement('button');
+            detailButton.textContent = 'Detail';
+            detailButton.addEventListener('click', () => showDetail(item));
+            const detailCell = document.createElement('td');
+            detailCell.appendChild(detailButton);
+            row.appendChild(detailCell);
+
+ 
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.addEventListener('click', () => editItem(item));
+            const editCell = document.createElement('td');
+            editCell.appendChild(editButton);
+            row.appendChild(editCell);
+
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => deleteItem(item));
+            const deleteCell = document.createElement('td');
+            deleteCell.appendChild(deleteButton);
+            row.appendChild(deleteCell);
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    function showDetail(item) {
+
+    }
+
+    function editItem(item) {
+
+    }
+
+    function deleteItem(item) {
+
+    }
+
+
+    fetchAccountInformation();
+
+
+</script>
